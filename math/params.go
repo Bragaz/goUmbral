@@ -17,56 +17,56 @@
 package math
 
 import (
-    "github.com/nucypher/goUmbral/openssl"
+	"github.com/nucypher/goUmbral/openssl"
 )
 
 type UmbralParameters struct {
-    Curve *openssl.Curve
-    Size uint
-    G *Point
-    U *Point
+	Curve *openssl.Curve
+	Size  uint
+	G     *Point
+	U     *Point
 }
 
 func NewUmbralParameters(curve *openssl.Curve) (*UmbralParameters, error) {
-    var params UmbralParameters
-    params.Curve = curve
-    params.Size = curve.FieldOrderSize()
+	var params UmbralParameters
+	params.Curve = curve
+	params.Size = curve.FieldOrderSize()
 
-    params.G = GetGeneratorFromCurve(curve)
-    gBytes, err := params.G.ToBytes(true)
-    if err != nil {
-        return nil, err
-    }
+	params.G = GetGeneratorFromCurve(curve)
+	gBytes, err := params.G.ToBytes(true)
+	if err != nil {
+		return nil, err
+	}
 
-    parametersSeed := []byte("NuCypher/UmbralParameters/")
+	parametersSeed := []byte("NuCypher/UmbralParameters/")
 
-    parametersSeed = append(parametersSeed, byte('u'))
+	parametersSeed = append(parametersSeed, byte('u'))
 
-    params.U, err = UnsafeHashToPoint(gBytes, &params, parametersSeed)
-    if err != nil {
-        return nil, err
-    }
-    return &params, nil
+	params.U, err = UnsafeHashToPoint(gBytes, &params, parametersSeed)
+	if err != nil {
+		return nil, err
+	}
+	return &params, nil
 }
 
 func (m *UmbralParameters) Equals(other *UmbralParameters) bool {
-    // TODO: This is not comparing the order, which currently is an OpenSSL pointer
+	// TODO: This is not comparing the order, which currently is an OpenSSL pointer
 
-    eCurve := m.Curve.Equals(other.Curve)
+	eCurve := m.Curve.Equals(other.Curve)
 
-    eSize := (m.Size == other.Size)
+	eSize := m.Size == other.Size
 
-    eG, err := m.G.Equals(other.G)
-    if err != nil {
-        // Could return the error.
-        return false
-    }
+	eG, err := m.G.Equals(other.G)
+	if err != nil {
+		// Could return the error.
+		return false
+	}
 
-    eU, err := m.U.Equals(other.U)
-    if err != nil {
-        // Could return the error.
-        return false
-    }
+	eU, err := m.U.Equals(other.U)
+	if err != nil {
+		// Could return the error.
+		return false
+	}
 
-    return eCurve && eSize && eG && eU
+	return eCurve && eSize && eG && eU
 }
