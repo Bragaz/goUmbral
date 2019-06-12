@@ -17,7 +17,7 @@
 package math
 
 import (
-	"github.com/nucypher/goUmbral/openssl"
+	"goUmbral/openssl"
 )
 
 type UmbralParameters struct {

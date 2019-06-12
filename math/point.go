@@ -19,7 +19,7 @@ package math
 import (
 	"encoding/binary"
 	"errors"
-	"github.com/nucypher/goUmbral/openssl"
+	"goUmbral/openssl"
 	"golang.org/x/crypto/blake2b"
 	"math"
 	"math/big"
